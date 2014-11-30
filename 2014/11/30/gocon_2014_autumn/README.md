@@ -50,8 +50,8 @@ Python にも同名で同じような用途のクラスが存在
 
 # bytes.Buffer
 
-* 任意のバイト列を元に作成できるバッファ
-* 任意の `string` を元に作成することもできる
+* `[]byte` にいろんなメソッドが生えたような構造体
+* 任意の `[]byte` や `string` を元に生成することができる
 * `io.ReadWriter` インターフェイスを満たす
 * だいたいファイルのように振る舞う
 
@@ -76,7 +76,7 @@ type Writer interface {
 }
 ~~~~
 
-`bytes.Buffer` と `os.File` はこれらを満たしている。
+`os.File`, `net.TCPConn`, `net.UnixConn` などはこれらを満たしている。
 
 # I/O に依存したプログラムを書いてみる
 
