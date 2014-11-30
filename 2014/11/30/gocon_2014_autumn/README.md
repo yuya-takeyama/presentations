@@ -1,4 +1,4 @@
-% Go で I/O に依存したプログラムのユニットテスト
+% Unit-testing programs depend on I/O in Go
 % @yuya_takeyama
 % 2014/11/30@GoCon 2014 Autumn
 
