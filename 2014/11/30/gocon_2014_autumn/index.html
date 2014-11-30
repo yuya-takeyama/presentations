@@ -100,6 +100,15 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <h2 class="author"><span class="citation" data-cites="yuya_takeyama">@yuya_takeyama</span></h2>
   <h3 class="date">2014/11/30@GoCon 2014 Autumn</h3>
 </section>
+<section id="at-first" class="slide level1">
+<h1>At first</h1>
+<ul>
+<li>Mr. Pike, thank you for coming to Japan</li>
+<li>And thank you for great language</li>
+<li>主催者の皆様、素晴らしいイベントをありがとうございます</li>
+<li>楽天さん、会場をありがとうございます</li>
+</ul>
+</section>
 <section id="こんにちは" class="slide level1">
 <h1>こんにちは</h1>
 <ul>
@@ -109,6 +118,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <ul>
 <li><a href="https://github.com/yuya-takeyama/db2yaml">db2yaml</a></li>
 <li><a href="https://github.com/yuya-takeyama/dbyaml2md">dbyaml2md</a></li>
+<li><a href="https://github.com/yuya-takeyama/envjson">envjson</a></li>
 </ul></li>
 </ul>
 </section>
@@ -216,8 +226,23 @@ hoge</code></pre>
 </ul></li>
 </ul>
 </section>
-<section id="ご清聴ありがとうございました" class="slide level1">
-<h1>ご清聴ありがとうございました</h1>
+<section id="bytes.buffer-応用編" class="slide level1">
+<h1>bytes.Buffer 応用編</h1>
+<p><code>exec.Cmd</code> の標準入出力を差し替えてコマンドの E2E テスト</p>
+<pre class="sourceCode go"><code class="sourceCode go"><span class="kw">func</span> TestCommand(t *testing.T) {
+    cmd := exec.Command(<span class="st">&quot;go&quot;</span>, <span class="st">&quot;run&quot;</span>, <span class="st">&quot;double.go&quot;</span>)
+    cmd.Stdin = bytes.NewBufferString(<span class="st">&quot;hoge</span><span class="ch">\n</span><span class="st">&quot;</span>)
+    stdout := <span class="fu">new</span>(bytes.Buffer)
+    cmd.Stdout = stdout
+
+    _ = cmd.Run()
+
+    <span class="kw">if</span> stdout.String() != <span class="st">&quot;hoge</span><span class="ch">\n</span><span class="st">hoge</span><span class="ch">\n</span><span class="st">&quot;</span> {
+        t.Fatal(<span class="st">&quot;Not matched&quot;</span>)
+    }</code></pre>
+</section>
+<section id="ご静聴ありがとうございました" class="slide level1">
+<h1>ご静聴ありがとうございました</h1>
 </section>
 <!-- {{{{ dzslides core
 #
