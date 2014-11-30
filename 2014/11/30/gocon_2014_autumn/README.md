@@ -156,6 +156,7 @@ func TestCommand(t *testing.T) {
 	if stdout.String() != "hoge\nhoge\n" {
 		t.Fatal("Not matched")
 	}
+}
 ~~~~
 
 # ご静聴ありがとうございました
