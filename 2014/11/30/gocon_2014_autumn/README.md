@@ -6,7 +6,7 @@
 
 * Mr. Pike, thank you for coming to Japan
 * And thank you for great language
-* 主催者の皆様、素晴らしいイベントをありがとうございます
+* 主催者の皆様、素晴らしいイベントと発表の機会をありがとうございます
 * 楽天さん、会場をありがとうございます
 
 # このスライドについて
