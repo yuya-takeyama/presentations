@@ -2,6 +2,18 @@
 % @yuya_takeyama
 % 2014/11/30@GoCon 2014 Autumn
 
+# At first
+
+* Mr. Pike, thank you for coming to Japan
+* And thank you for great language
+* 主催者の皆様、素晴らしいイベントをありがとうございます
+* 楽天さん、会場をありがとうございます
+
+# このスライドについて
+
+* 発表に含まれるコードは [GitHub リポジトリ中](https://github.com/yuya-takeyama/presentations/tree/master/2014/11/30/gocon_2014_autumn) にあります
+* Pandoc はじめて使いました。便利な運用についてご存知の方教えてください...
+
 # こんにちは
 
 * 普段は PHP で Web アプリ運用してます
@@ -9,6 +21,7 @@
 * コマンドラインツールは徐々に Go に寄せつつあります
     * [db2yaml](https://github.com/yuya-takeyama/db2yaml)
     * [dbyaml2md](https://github.com/yuya-takeyama/dbyaml2md)
+    * [envjson](https://github.com/yuya-takeyama/envjson)
 
 # 本日のお題
 
@@ -126,5 +139,23 @@ end
 * `*os.File` ではなく `io.Reader` や `io.Writer` に依存する
 * `Buffer.Bytes()` や `Buffer.String()` で中身を取り出して検査する
     * 検査それ自体は `string` なり `[]byte` なりの流儀に従って比較を行う
+
+# bytes.Buffer 応用編
+
+`exec.Cmd` の標準入出力を差し替えてコマンドの E2E テスト
+
+~~~~ {.go}
+func TestCommand(t *testing.T) {
+	cmd := exec.Command("go", "run", "double.go")
+	cmd.Stdin = bytes.NewBufferString("hoge\n")
+	stdout := new(bytes.Buffer)
+	cmd.Stdout = stdout
+
+	_ = cmd.Run()
+
+	if stdout.String() != "hoge\nhoge\n" {
+		t.Fatal("Not matched")
+	}
+~~~~
 
 # ご静聴ありがとうございました
