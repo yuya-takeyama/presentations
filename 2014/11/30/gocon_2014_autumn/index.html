@@ -153,8 +153,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <section id="bytes.buffer" class="slide level1">
 <h1>bytes.Buffer</h1>
 <ul>
-<li>任意のバイト列を元に作成できるバッファ</li>
-<li>任意の <code>string</code> を元に作成することもできる</li>
+<li><code>[]byte</code> にいろんなメソッドが生えたような構造体</li>
+<li>任意の <code>[]byte</code> や <code>string</code> を元に生成することができる</li>
 <li><code>io.ReadWriter</code> インターフェイスを満たす</li>
 <li>だいたいファイルのように振る舞う</li>
 </ul>
@@ -175,7 +175,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <span class="kw">type</span> Writer <span class="kw">interface</span> {
     Write(p []<span class="dt">byte</span>) (n <span class="dt">int</span>, err <span class="dt">error</span>)
 }</code></pre>
-<p><code>bytes.Buffer</code> と <code>os.File</code> はこれらを満たしている。</p>
+<p><code>os.File</code>, <code>net.TCPConn</code>, <code>net.UnixConn</code> などはこれらを満たしている。</p>
 </section>
 <section id="io-に依存したプログラムを書いてみる" class="slide level1">
 <h1>I/O に依存したプログラムを書いてみる</h1>
