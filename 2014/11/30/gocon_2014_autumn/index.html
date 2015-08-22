@@ -2,7 +2,7 @@
 <head>
 <meta charset="utf-8">
   <meta name="author" content="@yuya_takeyama" />
-  <title>Go で I/O に依存したプログラムのユニットテスト</title>
+  <title>Unit-testing programs depend on I/O in Go</title>
   <style type="text/css">code{white-space: pre;}</style>
   <style type="text/css">
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
@@ -96,9 +96,25 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </head>
 <body>
 <section class="title">
-  <h1 class="title">Go で I/O に依存したプログラムのユニットテスト</h1>
+  <h1 class="title">Unit-testing programs depend on I/O in Go</h1>
   <h2 class="author"><span class="citation" data-cites="yuya_takeyama">@yuya_takeyama</span></h2>
   <h3 class="date">2014/11/30@GoCon 2014 Autumn</h3>
+</section>
+<section id="at-first" class="slide level1">
+<h1>At first</h1>
+<ul>
+<li>Mr. Pike, thank you for coming to Japan</li>
+<li>And thank you for great language</li>
+<li>主催者の皆様、素晴らしいイベントと発表の機会をありがとうございます</li>
+<li>楽天さん、会場をありがとうございます</li>
+</ul>
+</section>
+<section id="このスライドについて" class="slide level1">
+<h1>このスライドについて</h1>
+<ul>
+<li>発表に含まれるコードは <a href="https://github.com/yuya-takeyama/presentations/tree/master/2014/11/30/gocon_2014_autumn">GitHub リポジトリ中</a> にあります</li>
+<li>Pandoc はじめて使いました。便利な運用についてご存知の方教えてください...</li>
+</ul>
 </section>
 <section id="こんにちは" class="slide level1">
 <h1>こんにちは</h1>
@@ -109,6 +125,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <ul>
 <li><a href="https://github.com/yuya-takeyama/db2yaml">db2yaml</a></li>
 <li><a href="https://github.com/yuya-takeyama/dbyaml2md">dbyaml2md</a></li>
+<li><a href="https://github.com/yuya-takeyama/envjson">envjson</a></li>
 </ul></li>
 </ul>
 </section>
@@ -136,8 +153,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <section id="bytes.buffer" class="slide level1">
 <h1>bytes.Buffer</h1>
 <ul>
-<li>任意のバイト列を元に作成できるバッファ</li>
-<li>任意の <code>string</code> を元に作成することもできる</li>
+<li><code>[]byte</code> にいろんなメソッドが生えたような構造体</li>
+<li>任意の <code>[]byte</code> や <code>string</code> を元に生成することができる</li>
 <li><code>io.ReadWriter</code> インターフェイスを満たす</li>
 <li>だいたいファイルのように振る舞う</li>
 </ul>
@@ -158,7 +175,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <span class="kw">type</span> Writer <span class="kw">interface</span> {
     Write(p []<span class="dt">byte</span>) (n <span class="dt">int</span>, err <span class="dt">error</span>)
 }</code></pre>
-<p><code>bytes.Buffer</code> と <code>os.File</code> はこれらを満たしている。</p>
+<p><code>os.File</code>, <code>net.TCPConn</code>, <code>net.UnixConn</code> などはこれらを満たしている。</p>
 </section>
 <section id="io-に依存したプログラムを書いてみる" class="slide level1">
 <h1>I/O に依存したプログラムを書いてみる</h1>
@@ -216,8 +233,24 @@ hoge</code></pre>
 </ul></li>
 </ul>
 </section>
-<section id="ご清聴ありがとうございました" class="slide level1">
-<h1>ご清聴ありがとうございました</h1>
+<section id="bytes.buffer-応用編" class="slide level1">
+<h1>bytes.Buffer 応用編</h1>
+<p><code>exec.Cmd</code> の標準入出力を差し替えてコマンドの E2E テスト</p>
+<pre class="sourceCode go"><code class="sourceCode go"><span class="kw">func</span> TestCommand(t *testing.T) {
+    cmd := exec.Command(<span class="st">&quot;go&quot;</span>, <span class="st">&quot;run&quot;</span>, <span class="st">&quot;double.go&quot;</span>)
+    cmd.Stdin = bytes.NewBufferString(<span class="st">&quot;hoge</span><span class="ch">\n</span><span class="st">&quot;</span>)
+    stdout := <span class="fu">new</span>(bytes.Buffer)
+    cmd.Stdout = stdout
+
+    _ = cmd.Run()
+
+    <span class="kw">if</span> stdout.String() != <span class="st">&quot;hoge</span><span class="ch">\n</span><span class="st">hoge</span><span class="ch">\n</span><span class="st">&quot;</span> {
+        t.Fatal(<span class="st">&quot;Not matched&quot;</span>)
+    }
+}</code></pre>
+</section>
+<section id="ご静聴ありがとうございました" class="slide level1">
+<h1>ご静聴ありがとうございました</h1>
 </section>
 <!-- {{{{ dzslides core
 #
