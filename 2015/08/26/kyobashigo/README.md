@@ -1,4 +1,4 @@
-% Writing Command Line Tools in Go
+% Go and UNIX Philosophy
 % @yuya_takeyama
 % 2015/08/26 Kyobashi.go #1
 
@@ -21,7 +21,8 @@
 # 今日話す内容
 
 * Go でコマンドラインツールを書くモチベーション
-* 覚えておくべきテクニック
+* UNIX 哲学とは
+* Go における UNIX 哲学
 
 # 今日話さない内容
 
@@ -56,6 +57,74 @@
     * map が順序を持ってないと困る場合
     * JSON の操作も割と面倒
 
-# 覚えておくべきテクニック
+# UNIX 哲学とは
 
-* `io.Reader` と `io.Writer` を使いこなす
+# UNIX 哲学とは
+
+<div style="text-align: center;"><img src="gancarz.png" alt="UNIXという考え方" width="40%"></div>
+
+# マイク・ガンカーズの UNIX 哲学 (一部抜粋)
+
+* 小さいものは美しい。
+* 各プログラムが一つのことをうまくやるようにせよ。
+* 全てのプログラムはフィルタとして振る舞うようにせよ。
+
+# UNIX プログラムとは
+
+~~~~
+$ seq 100 | awk '$1 % 2 == 0' | tail
+82
+84
+86
+88
+90
+92
+94
+96
+98
+100
+~~~~
+
+# UNIX プログラムとは
+
+* 小さなプログラムを組み合わせる
+* プログラム同士はパイプでつなぐ
+* パイプは UNIX における標準インターフェイス
+* Go でもこういうプログラムを作っていきたい！！
+
+# Go におけるインターフェイス
+
++ Go にはクラスがない
++ Go には継承もない
+* でもインターフェイスがある！
+
+# Go におけるインターフェイス
+
+~~~~ {.go}
+type Stringer interface {
+        String() string
+}
+~~~~
+
+* `Stringer` インターフェイスを満たせば `fmt.Println` できる
+* クラスの継承改装等は関係ない (そもそもクラスがない)
+* 特定の構造体である必要もない
+* インターフェイスに定められたメソッドがあればよい (ダックタイピング的)
+
+# コマンドラインツールを作るなら
+
+* `io.Reader`
+* `io.Writer`
+* これが UNIX でいうパイプ、標準インターフェイス！
+
+# `io.Reader` と `io.Writer`
+
+~~~~ {.go}
+type Reader interface {
+        Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+        Write(p []byte) (n int, err error)
+}
+~~~~
