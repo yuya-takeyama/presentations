@@ -6,6 +6,7 @@
 
 * @yuya_takeyama
 * 赤坂で PHP 書いてます
+* 失職まで三営業日
 * 9 月から京橋で Ruby とか書いてると思います
 * Go は主にコマンドラインツールを作るのに利用
 * コマンドラインツールは Ruby でも書く (自作のイチオシは [jr](https://github.com/yuya-takeyama/jr))
@@ -61,7 +62,7 @@
 
 # UNIX 哲学とは
 
-<div style="text-align: center;"><img src="gancarz.png" alt="UNIXという考え方" width="40%"></div>
+<div style="text-align: center;"><a href="http://www.amazon.co.jp/gp/product/4274064069/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4274064069&amp;linkCode=as2&amp;tag=yuyat-22"><img src="gancarz.png" alt="UNIXという考え方" width="40%"></a></div>
 
 # マイク・ガンカーズの UNIX 哲学 (一部抜粋)
 
@@ -90,32 +91,25 @@ $ seq 100 | awk '$1 % 2 == 0' | tail
 * 小さなプログラムを組み合わせる
 * プログラム同士はパイプでつなぐ
 * パイプは UNIX における標準インターフェイス
-* Go でもこういうプログラムを作っていきたい！！
 
-# Go におけるインターフェイス
+# UNIX 哲学の普遍性
 
-+ Go にはクラスがない
-+ Go には継承もない
-* でもインターフェイスがある！
+* プログラミングパラダイムを超えて
+    * オブジェクト指向 (単一責任原則)
+    * 関数型プログラミング (小さな関数を組み合わせていくスタイル)
+* レイヤも超えて
+    * マイクロサービスアーキテクチャ
 
-# Go におけるインターフェイス
+# Go でも UNIX っぽいプログラミングがしたい！
 
-~~~~ {.go}
-type Stringer interface {
-        String() string
-}
-~~~~
+# Go におけるパイプ
 
-* `Stringer` インターフェイスを満たせば `fmt.Println` できる
-* クラスの継承改装等は関係ない (そもそもクラスがない)
-* 特定の構造体である必要もない
-* インターフェイスに定められたメソッドがあればよい (ダックタイピング的)
-
-# コマンドラインツールを作るなら
-
-* `io.Reader`
-* `io.Writer`
+* `io.Reader` と `io.Writer`
 * これが UNIX でいうパイプ、標準インターフェイス！
+* GoCon2014 で Go 開発者の [Rob Pike 自身もそのように言っていたらしい](http://gihyo.jp/news/report/01/GoCon2014Autumn/0001?page=2)
+    * (当日寝坊して実際には聞けていない)
+* これらを使うと様々な関数・メソッドを組み合わせられる (`bufio`, `io/ioutil` 等)
+* ファイルもネットワークソケットも `io.Reader` であり `io.Writer`
 
 # `io.Reader` と `io.Writer`
 
@@ -123,8 +117,89 @@ type Stringer interface {
 type Reader interface {
         Read(p []byte) (n int, err error)
 }
-
 type Writer interface {
         Write(p []byte) (n int, err error)
 }
 ~~~~
+
+* シグネチャ的には同一っぽいが...
+* `io.Reader` は (何かから) `p` に読み込んだデータを書き込んでそのバイト数を返す
+* `io.Writer` は `p` で受け取ったデータを (何かに) 書き出してそのバイト数を返す
+
+# Go で cat を実装してみる
+
+* 画面に納める都合でエラー処理雑です
+    * 参考にしないでください
+* `io.Reader` がどのように使われているか、に着目してください
+* `io.Copy()` の使い方だけ覚えておいてください
+
+~~~~ {.go}
+func Copy(dst Writer, src Reader) (written int64, err error)
+~~~~
+
+# Go で cat を実装してみる (1)
+
+入力としてファイルをひとつを受け取る
+
+~~~~ {.go}
+import (
+	"io"
+	"os"
+)
+
+func main() {
+	file, _ := os.Open(os.Args[1]) // io.Reader
+	io.Copy(os.Stdout, file)
+}
+~~~~
+
+# Go で cat を実装してみる (2)
+
+入力としてファイルをふたつ受け取る
+
+~~~~ {.go}
+import (
+	"io"
+	"os"
+)
+
+func main() {
+	file1, _ := os.Open(os.Args[1])        // io.Reader
+	file2, _ := os.Open(os.Args[2])        // io.Reader
+	reader := io.MultiReader(file1, file2) // io.Reader
+	io.Copy(os.Stdout, reader)
+}
+~~~~
+
+# Go で cat を実装してみる (3)
+
+入力として標準入力または複数のファイルを受け取る
+
+~~~~ {.go}
+import (
+	"io"
+	"os"
+	"github.com/yuya-takeyama/argf"
+)
+
+func main() {
+	reader, _ := argf.Argf() // io.Reader
+	io.Copy(os.Stdout, reader)
+}
+~~~~
+
+# I/O を使ったプログラムのテスト
+
+* `bytes.Buffer` 構造体を使うと便利
+    * `io.Reader` であり `io.Writer` でもある
+    * Ruby/Python における `StringIO` みたいなもの
+* 標準入出力のスタブとして使える
+* ...という話を [GoCon 2014 の LT でしていました](https://yuya-takeyama.github.io/presentations/2014/11/30/gocon_2014_autumn/)
+
+# まとめ
+
+* Go はコマンドラインツールを作るのに便利
+* コマンドラインツールを作るときは UNIX 哲学を思い出そう
+* Go においては `io.Reader` と `io.Writer` を活用しよう
+
+# ありがとうございました
