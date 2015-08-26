@@ -9,6 +9,8 @@
 * 失職まで三営業日
 * 9 月から京橋で Ruby とか書いてると思います
 * Go は主にコマンドラインツールを作るのに利用
+    * GOPATH=$HOME 教 (ghq も $HOME/src)
+    * エディタは Vim で faith/go-vim を NeoBundle
 * コマンドラインツールは Ruby でも書く (自作のイチオシは [jr](https://github.com/yuya-takeyama/jr))
 
 # 今まで Go で作ってきたもの
