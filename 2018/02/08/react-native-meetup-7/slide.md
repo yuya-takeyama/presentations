@@ -174,3 +174,9 @@ $ appcenter codepush rollback \
 ---
 
 # Thanks!
+
+---
+
+## Quipper is hiring React Native developers!
+
+https://www.quipper.com/career/Japan/9/
