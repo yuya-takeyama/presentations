@@ -1,8 +1,8 @@
-# Releasing React Native apps automatically with CodePush and CircleCI
+## Releasing React Native apps automatically with CodePush and CircleCI
 
 ---
 
-# Release native apps like web! 🚀
+## Release native apps like web! 🚀
 
 ---
 
